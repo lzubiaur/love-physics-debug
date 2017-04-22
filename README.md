@@ -2,7 +2,11 @@ Very simple box2d debug draw
 
 ![alt tag](screenshot.png)
 
-Example
+###Install
+
+Clone this repo or download `physics-debug.lua` and copy the file in your project.
+
+###Example
 
 ``` lua
 local drawDebugPhysics = require 'physics-debug'
@@ -12,9 +16,10 @@ function love.draw()
 end
 ```
 
-Run the test
+###Run the test
 
 ```
+git clone https://github.com/lzubiaur/love-physics-debug
 cd love-physics-debug
 love .
 ```
