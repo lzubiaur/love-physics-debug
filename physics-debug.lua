@@ -1,4 +1,5 @@
 -- debug.lua
+-- Laurent Zubiaur 2017 - Public Domain
 
 local Debug = {}
 
@@ -18,19 +19,6 @@ local function drawPolygon(polygon,r,g,b)
   love.graphics.polygon('line', points)
 end
 
-local function drawEdge(edge,r,g,b)
-  love.graphics.setColor(r,g,b,255)
-  love.graphics.line(edge:getPoints())
-end
-
-local function drawChain(chain,r,g,b)
-  local points = { chain:getPoints() }
-  love.graphics.setColor(r,g,b,255)
-  for i=1,#points-2,2 do
-    love.graphics.line(points[i],points[i+1],points[i+2],points[i+3])
-  end
-end
-
 local function drawFixture(fixture)
   local body = fixture:getBody()
   local shape = fixture:getShape()
@@ -38,23 +26,22 @@ local function drawFixture(fixture)
   love.graphics.translate(fixture:getBody():getPosition())
   love.graphics.rotate(body:getAngle())
 
-  local color = { 0, 0, 255 }
+  local r,g,b = 0,0,255 -- dynamic
   if fixture:isSensor() then
-    color = { 255, 255, 0 }
+    r,g,b = 255,255,0
   elseif body:getType() == 'static' then
-    color = { 0, 255, 0 }
+    r,g,b = 0,255,0
   elseif body:getType() == 'kinematic' then
-    color = { 255, 255, 0 }
+    r,g,b = 255,0,0
   end
 
   if shape:getType() == 'circle' then
-    drawCircle(shape, unpack(color))
+    drawCircle(shape, r,g,b)
   elseif shape:getType() == 'polygon' then
-    drawPolygon(shape, unpack(color))
-  elseif shape:getType() == 'edge' then
-    drawEdge(shape, unpack(color))
-  elseif shape:getType() == 'chain' then
-    drawChain(shape, unpack(color))
+    drawPolygon(shape, r,g,b)
+  else -- chain or edge
+    love.graphics.setColor(r,g,b,255)
+    love.graphics.line(shape:getPoints())
   end
   love.graphics.pop()
   return true
@@ -62,7 +49,29 @@ end
 
 function Debug.drawPhysics(world, x,y, w,h)
   local r,g,b,a = love.graphics.getColor()
+  local ps = love.graphics.getPointSize()
+  local ls = love.graphics.getLineWidth()
+
+  love.graphics.setPointSize(5)
+  love.graphics.setLineWidth(2)
+
   world:queryBoundingBox(x,y, x+w,y+h, drawFixture)
+
+  love.graphics.setColor(255,0,255,255)
+  local joints = world:getJointList()
+  for k,v in ipairs(joints) do
+    local x1,y1,x2,y2 = v:getAnchors()
+    if x2 then
+      love.graphics.line(x1,y1, x2,y2)
+    else
+      love.graphics.point(x1,y1)
+    end
+  end
+
+  -- TODO draw contact points?
+
+  love.graphics.setPointSize(ps)
+  love.graphics.setLineWidth(ls)
   love.graphics.setColor(r,g,b,a)
 end
 
