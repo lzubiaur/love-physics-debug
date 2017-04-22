@@ -58,7 +58,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  debug.drawPhysics(world, 0,0, w,h)
+  debug(world, 0,0, w,h)
 end
 
 function love.keypressed(key, scancode, isrepeat)

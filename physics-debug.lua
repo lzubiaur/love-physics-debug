@@ -1,8 +1,6 @@
 -- debug.lua
 -- Laurent Zubiaur 2017 - Public Domain
 
-local Debug = {}
-
 local function drawCircle(circle,r,g,b)
   local x,y = circle:getPoint()
   love.graphics.setColor(r,g,b,64)
@@ -47,7 +45,7 @@ local function drawFixture(fixture)
   return true
 end
 
-function Debug.drawPhysics(world, x,y, w,h)
+local function drawDebugPhysics(world, x,y, w,h)
   local r,g,b,a = love.graphics.getColor()
   local ps = love.graphics.getPointSize()
   local ls = love.graphics.getLineWidth()
@@ -75,4 +73,4 @@ function Debug.drawPhysics(world, x,y, w,h)
   love.graphics.setColor(r,g,b,a)
 end
 
-return Debug
+return drawDebugPhysics
