@@ -18,6 +18,19 @@ local function drawPolygon(polygon,r,g,b)
   love.graphics.polygon('line', points)
 end
 
+local function drawEdge(edge,r,g,b)
+  love.graphics.setColor(r,g,b,255)
+  love.graphics.line(edge:getPoints())
+end
+
+local function drawChain(chain,r,g,b)
+  local points = { chain:getPoints() }
+  love.graphics.setColor(r,g,b,255)
+  for i=1,#points-2,2 do
+    love.graphics.line(points[i],points[i+1],points[i+2],points[i+3])
+  end
+end
+
 local function drawFixture(fixture)
   local body = fixture:getBody()
   local shape = fixture:getShape()
@@ -38,6 +51,10 @@ local function drawFixture(fixture)
     drawCircle(shape, unpack(color))
   elseif shape:getType() == 'polygon' then
     drawPolygon(shape, unpack(color))
+  elseif shape:getType() == 'edge' then
+    drawEdge(shape, unpack(color))
+  elseif shape:getType() == 'chain' then
+    drawChain(shape, unpack(color))
   end
   love.graphics.pop()
   return true
